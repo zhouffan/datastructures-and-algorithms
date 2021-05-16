@@ -5,13 +5,14 @@ package com.fuwa.datastructure.linked;
  * @Date: 2021/5/14 23:01
  * @Description: 节点
  */
-public class PersonNode{
+public class PersonNode2 {
     public int no;
     public String name;
     public String nickName;
-    public PersonNode next;
+    public PersonNode2 next;
+    public PersonNode2 pre;
 
-    public PersonNode(int no, String name, String nickName) {
+    public PersonNode2(int no, String name, String nickName) {
         this.no = no;
         this.name = name;
         this.nickName = nickName;

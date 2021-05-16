@@ -1,5 +1,8 @@
 package com.fuwa.datastructure.linked;
 
+import java.io.*;
+import java.util.Stack;
+
 /**
  * @Author: 进击的烧年.
  * @Date: 2021/5/14 23:00
@@ -100,6 +103,101 @@ public class SingleLinkedList {
         }
     }
 
+    /**
+     * 获取节点个数
+     * @return
+     */
+    public int getLength(){
+        PersonNode nextNode = head.next;
+        int num = 0;
+        while (nextNode != null){
+            num++;
+            nextNode = nextNode.next;
+        }
+        return num;
+    }
+
+    /**
+     * 查找链表中倒数 第index节点
+     * @param index
+     * @return
+     */
+    public PersonNode findLastIndexNode(int index){
+        int length = getLength();
+        if(length == 0 || index < 0 || index > length){
+            System.out.println("无效数据...");
+            return null;
+        }
+        PersonNode nextNode = this.head.next;
+        for (int i = 0; i < (length - index); i++) {
+            nextNode = nextNode.next;
+        }
+        return nextNode;
+    }
+
+    /**
+     * 反转链表
+     */
+    public void reverseList(){
+        PersonNode nextNode = head.next;
+        if(nextNode == null || nextNode.next.next == null){
+            System.out.println("链表小于2，不需要反转");
+            return;
+        }
+        PersonNode tempHead = new PersonNode(0, "","");
+        while (nextNode != null){
+            /**
+             * 临时插入数据，不能修改nextNode
+             * 要么对象深拷贝/浅拷贝
+             */
+            PersonNode insertNode = new PersonNode(
+                    nextNode.no, nextNode.name, nextNode.nickName);
+            insertNode.next = tempHead.next;
+            tempHead.next = insertNode;
+            //下一个
+            nextNode = nextNode.next;
+        }
+        head.next = tempHead.next;
+    }
+
+    /**
+     * 从尾到头打印
+     * 使用 stack 栈方式
+     */
+    public void reversePrint(){
+        Stack<PersonNode> stack = new Stack<>();
+        PersonNode nextNode = head.next;
+        while (nextNode != null){
+            stack.push(nextNode);
+            nextNode = nextNode.next;
+        }
+        while (stack.size() > 0){
+            System.out.println(stack.pop());
+        }
+    }
+
+    /**
+     * 复制
+     * @param old
+     * @return
+     */
+    public Object copy(Object old) {
+        Object clazz = null;
+        try {
+            // 写入字节流
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(old);
+            // 读取字节流
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            clazz = (Object) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return clazz;
+    }
+
     public static void main(String[] args) {
         PersonNode hero1 = new PersonNode(1, "宋江", "及时雨");
         PersonNode hero2 = new PersonNode(2, "卢俊义", "玉麒麟"); 
@@ -122,5 +220,24 @@ public class SingleLinkedList {
         System.out.println();
         linkedList.delete(10);
         linkedList.list();
+
+        System.out.println();
+        System.out.printf("大小：%d ", linkedList.getLength());
+        System.out.println();
+
+        System.out.println();
+        System.out.printf("倒数第3：%s ", linkedList.findLastIndexNode(3));
+        System.out.println();
+
+        System.out.println("\n反向遍历，仅仅是打印：");
+        linkedList.reversePrint();
+
+        System.out.println("\n修改链表成反向列表：");
+        linkedList.reverseList();
+        linkedList.list();
+
+//        PersonNode heroTemp = (PersonNode) linkedList.copy(hero4);
+//        heroTemp.setNickName("xxxx");
+//        System.out.println(heroTemp + "\n" + hero4);
     }
 }
