@@ -7,7 +7,7 @@ package com.fuwa.datastructure.linked;
  */
 public class CircleSingleLinkedList {
     private PersonNode first = null;
-    private int nums = -1;
+    private int nums;
 
     /**
      * 创建一个 nums数量的环
@@ -33,13 +33,20 @@ public class CircleSingleLinkedList {
                 currentNode = node;
             }
         }
-
     }
 
+    /**
+     * 删除某个节点
+     * @param node
+     */
     public void delete(PersonNode node){
-        PersonNode nextNode = node.next;
-        PersonNode preNode = null;
+        if(node == null){
+            System.out.println("该节点为 null");
+            return;
+        }
         PersonNode currentNode = node;
+        PersonNode nextNode = node.next;
+        PersonNode preNode;
         while (true){
             if(currentNode.next == node){
                 //找到前一个节点
@@ -48,9 +55,31 @@ public class CircleSingleLinkedList {
             }
             currentNode = currentNode.next;
         }
-        if (preNode != null) {
-            preNode.next = nextNode;
+        //更新第一个节点
+        if(preNode.next.no == first.no){
+            first = nextNode;
         }
+        preNode.next = nextNode;
+    }
+
+    /**
+     * 根据no查找节点
+     * @param startNo
+     * @return
+     */
+    private PersonNode findPersonNodeByNo(int startNo){
+        if(first.no == startNo){
+            return first;
+        }
+        PersonNode currentNode = first.next;
+        //判断当前节点是否是第一个
+        while (currentNode != first){
+            if(currentNode.no == startNo){
+                return currentNode;
+            }
+            currentNode = currentNode.next;
+        }
+        return null;
     }
 
     /**
@@ -73,29 +102,27 @@ public class CircleSingleLinkedList {
      * @param countNum 数几下
      */
     public void countPerson(int startNo, int countNum){
+        if(startNo > (nums - 1)){
+            System.out.println("起始no 大于总数");
+            return;
+        }
         //先找到startNo 节点
-        PersonNode startNode = null;
-        PersonNode currentNode = first;
-        //循环一圈
-        do {
-            if (currentNode.no == startNo) {
-                startNode = currentNode;
-            }
-            //移动节点
-            currentNode = currentNode.next;
-        } while (currentNode.next != first);
-        System.out.println(startNode);
+        PersonNode startNode = findPersonNodeByNo(startNo);
+        System.out.println("startNode=====>"+startNode);
         while (true){
-            PersonNode outNode = startNode;
+            PersonNode outNode;
             for (int i = 0; i < countNum; i++) {
                 startNode = startNode.next;
             }
-            if(outNode == null){
+            outNode = startNode;
+            //最后一个自己
+            if(outNode.next == outNode){
+                System.out.println(outNode);
                 return;
             }
-            System.out.println(outNode);
             //删除节点
             delete(outNode);
+            System.out.println(outNode);
         }
     }
 
@@ -104,6 +131,11 @@ public class CircleSingleLinkedList {
         linkedList.showList();
 
         System.out.println("\n计算节点出圈顺序:");
-        linkedList.countPerson(0, 2);
+        PersonNode personNodeByNo = linkedList.findPersonNodeByNo(10);
+//        System.out.println(personNodeByNo);
+//        linkedList.delete(personNodeByNo);
+//        linkedList.showList();
+//        System.out.println();
+        linkedList.countPerson(1, 2);
     }
 }
